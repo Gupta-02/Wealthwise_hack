@@ -15,7 +15,7 @@ import PersonalFDRecommendation from './components/personalFD';
 import ExpenseDate from './components/ExpenseDate';
 import ExpenseTracker from './components/ExpenseTracker';
 import PersonalizedStocks from './components/PersonalizedStocks';
-
+//super ra bittu
 const App = () => {
   const [log, setLog] = useState(false);
   const [mail, setMail] = useState(localStorage.getItem('userEmail') || '');
