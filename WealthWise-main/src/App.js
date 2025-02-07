@@ -17,6 +17,7 @@ import ExpenseTracker from './components/ExpenseTracker';
 import PersonalizedStocks from './components/PersonalizedStocks';
 //super ra bittu
 //develop is important
+//emo
 const App = () => {
   const [log, setLog] = useState(false);
   const [mail, setMail] = useState(localStorage.getItem('userEmail') || '');
