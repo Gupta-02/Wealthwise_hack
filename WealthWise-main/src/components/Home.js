@@ -299,7 +299,156 @@ const Home = ({ mail }) => {
             ))}
           </div>
     
+          <h2 className="text-2xl font-bold mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 mr-2 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            Top Investments & Learning
+          </h2>
+    
+          {investments.map((category, categoryIndex) => (
+            <div key={category.type} className="mb-6" style={{ userSelect: 'none' }}>
+              <style>
+                {`
+                  ::-webkit-scrollbar {
+                    width: 2px;
+                    height: 2px;
+                  }
+                  ::-webkit-scrollbar:horizontal {
+                    width: 2px;
+                    height: 2px;
+                  }
+                  
+                  ::-webkit-scrollbar-thumb {
+                    background: linear-gradient(to bottom right, rgba(0, 0, 255, 0.9), rgba(128, 0, 128, 0.9)); /* Gradient from blue to purple */
+                    border-radius: 3px;
+                  }
+            
+                  ::-webkit-scrollbar-thumb:hover {
+                    background-color: #666; 
+                  }
+            
+                  ::-webkit-scrollbar-track {
+                    background-color: linear-gradient(to bottom right, rgba(0, 0, 255, 0.9), rgba(128, 0, 128, 0.9)); /* Gradient from blue to purple */
+                    border-radius: 3px;
+                  }
+                `}
+              </style>
+              <h3 className="text-lg font-semibold mb-3 text-bg-gradient-to-br from-blue-900/90 to-purple-900/50">{category.type}</h3>
+              
+              <div 
+                className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide whitespace-nowrap scroll-smooth overflow-hidden"
+                style={{
+                  scrollSnapType: 'x mandatory',
+                  WebkitOverflowScrolling: 'touch'
+                }}
+              >
+                {category.items.map((investment, index) => {
 
+                  const bgIntensity = Math.max(700 - (index * 50), 800);
+
+                  const img = cld.image(investment.image)
+                    .format('auto')
+                    .quality('auto')
+                    .resize(auto().gravity(autoGravity()).width(500).height(500));
+                  
+                  return category.type === 'Investment Videos' && videoDetails && videoDetails[investment.id] ? (
+                      <div
+                        key={videoDetails[investment.id].name}
+                        className={`flex-shrink-0 w-64 bg-gradient-to-br from-blue-900/90 to-purple-900/90-${bgIntensity} rounded-lg p-4 
+                          transform transition-all duration-300 
+                          hover:scale-105 hover:shadow-lg
+                          scroll-snap-align: start;`}
+                      >
+                        <div className="relative mb-3">
+                          <img
+                            src={videoDetails[investment.id].thumbnail}
+                            alt={videoDetails[investment.id].name}
+                            onClick={() => window.open(videoDetails[investment.id].videoUrl, '_blank')}
+                            className="w-full h-40 object-cover rounded-md"
+                          />
+                          <div className="absolute bottom-2 right-2 bg-black bg-opacity-70 text-white px-2 rounded">
+                            {videoDetails[investment.id].duration}
+                          </div>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-lg line-clamp-2">{videoDetails[investment.id].name}</h4>
+                          <p className="text-sm text-gray-300">{videoDetails[investment.id].views} views</p>
+                        </div>
+                      </div>
+                    ) : category.type === 'Mutual Funds' ?  (
+                      <div 
+                      key={investment.code || investment.name} 
+                      className={`flex-shrink-0 w-64 bg-gradient-to-br from-blue-1500/90 to-purple-1500/90${bgIntensity} rounded-lg p-4 
+                        transform transition-all duration-300 
+                        hover:scale-105 hover:shadow-lg
+                        scroll-snap-align: start;`}
+                        onClick={() => window.open(investment.link, '_blank')}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                            <h4 className="font-bold text-lg">{investment.name}</h4>
+                            <div className="flex space-x-2">
+                              <p className="text-sm text-gray-400">{investment.code}</p>
+                              <p className="text-sm text-gray-400">( {investment.return}% )</p>
+                            </div>
+                        </div>
+                          <AdvancedImage 
+                            className="w-11 h-11 rounded-full object-cover" 
+                            cldImg={img} 
+                          />
+                        
+                      </div>
+                    </div>
+                  )
+                 : category.type === 'Fixed Deposits' ?  (
+                    <div 
+                      key={investment.code || investment.name} 
+                      className={`flex-shrink-0 w-64 bg-gradient-to-br from-blue-1500/90 to-purple-1500/90${bgIntensity} rounded-lg p-4 
+                        transform transition-all duration-300 
+                        hover:scale-105 hover:shadow-lg
+                        scroll-snap-align: start;`}
+                        onClick={() => window.open(investment.link, '_blank')}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                            <h4 className="font-bold text-lg">{investment.name}</h4>
+                            <div className="flex space-x-2">
+                              <p className="text-sm text-gray-400">{investment.code}</p>
+                              <p className="text-sm text-gray-400">( {investment.return}% )</p>
+                            </div>
+                        </div>
+                        <AdvancedImage 
+                            className="w-11 h-11 rounded-full object-cover" 
+                            cldImg={img} 
+                          />
+                      </div>
+                    </div>
+                  ) : <div 
+                  key={investment.code || investment.name} 
+                  className={`flex-shrink-0 w-64 bg-gradient-to-br from-blue-1500/90 to-purple-1500/90${bgIntensity} rounded-lg p-4 
+                    transform transition-all duration-300 
+                    hover:scale-105 hover:shadow-lg
+                    scroll-snap-align: start;`}
+                  onClick={() => window.open(investment.link, '_blank')}
+              >
+                  <div className="flex justify-between items-center">
+                      <div className="flex flex-col">
+                          <h4 className="font-bold text-lg leading-tight">{investment.name}</h4>
+                          <div className="flex space-x-2">
+                              <p className="text-sm text-gray-400">{investment.code}</p>
+                              <p className="text-sm text-gray-400">( {investment.icon}{investment.price} )</p>
+                          </div>
+                      </div>
+                      <AdvancedImage
+                        className="w-11 h-11 rounded-full object-cover"
+                        cldImg={img}
+                      />
+                  </div>
+              </div>; }) }
+              </div>
+            </div>
+          ))}
         </div>
       );
       };
