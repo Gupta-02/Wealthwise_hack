@@ -203,7 +203,7 @@ const Home = ({ mail }) => {
           ];
 
       
-        // investing here for now 
+        // investing here for now  stocks 
         const investments = [
         {
             type: 'Stocks',
