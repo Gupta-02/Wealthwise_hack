@@ -135,39 +135,7 @@ const App = () => {
                         />
                     ))}
                 </motion.div>
-                <motion.div 
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="flex justify-center space-x-4 mb-6"
-                >
-                    {iconList.map((item, index) => (
-                        <motion.div
-                            key={index}
-                            variants={itemVariants}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            animate="animate"
-                            className={`p-4 rounded-xl ${item.color} flex items-center justify-center`}
-                        >
-                            {item.icon}
-                        </motion.div>
-                    ))}
-                </motion.div>
-
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ 
-                        opacity: 1, 
-                        y: 0,
-                        transition: {
-                            delay: 0.5
-                        }
-                    }}
-                    className="text-white/70 text-lg"
-                >
-                    Analyzing your financial profile...
-                </motion.p>
+                
                 <motion.div 
                     initial={{ opacity: 0 }}
                     animate={{ 
