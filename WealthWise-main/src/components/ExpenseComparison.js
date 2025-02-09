@@ -194,7 +194,137 @@ const ExpenseComparison = ({ data, mail,props }) => {
           </motion.h1>
         </div>
 
-        
+        {/* Content */}
+        <div className="grid md:grid-cols-3 gap-8 p-8">
+          {/* Bar Chart */}
+           <div className="md:col-span-2 min-h-[450px] max-h-[740px] flex items-center justify-center md:mt-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={data1}
+                margin={{ top: 20, right: 10, left: 10, bottom: 40 }} 
+                onMouseMove={(state) => {
+                  if (state.isTooltipActive) {
+                    const categoryIndex = state.activeTooltipIndex;
+                    setSelectedCategory(data1[categoryIndex]?.category);
+                  }
+                }}
+                onMouseLeave={() => setSelectedCategory(null)}
+              >
+                <CartesianGrid 
+                  stroke="#e6e6e6" 
+                  strokeDasharray="3 3" 
+                  vertical={false}
+                />
+                <XAxis 
+                  dataKey="category" 
+                  angle={window.innerWidth < 600 ? -90 : -45}
+                  textAnchor="end"
+                  interval={0}
+                  tick={{ 
+                    fill: 'white', 
+                    fontSize: '0.75rem', 
+                    fontWeight: 600 
+                  }}
+                  tickFormatter={formatXAxisLabel}
+                  height={80} 
+                />
+                <YAxis 
+                  tickFormatter={formatCurrency}
+                  tick={{ fill: 'white' }}
+                />
+                <Tooltip 
+                  cursor={{ fill: 'transparent' }}
+                  formatter={(value, name) => [formatCurrency(value), name]}
+                  contentStyle={{ 
+                    backgroundColor: 'white', 
+                    border: '1px solid #e0e0e0', 
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    color:'white'
+                     
+                  }}
+                />
+                <Legend 
+                  verticalAlign="top" 
+                  wrapperStyle={{ color: "#FFFFFF" }} 
+                  height={36}
+                />
+                <Bar 
+                  dataKey="Your Expenses"
+                  fill="#10B981"
+       
+                  barSize={40}
+                  opacity={selectedCategory === null ? 1 : 0.3}
+                  animationBegin={0}
+                  animationDuration={1500}
+                />
+                <Bar 
+                  dataKey="Average Expenses" 
+                  fill="#F43F5E"
+                  barSize={40}
+                  opacity={selectedCategory === null ? 1 : 0.3}
+                  animationBegin={500}
+                  animationDuration={1500}
+                />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Insights Panel */}
+          <div className="space-y-6">
+            <motion.h2 
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="text-2xl font-bold text-gray-100"
+            >
+              Key Insights
+            </motion.h2>
+            <AnimatePresence>
+              {data1.map((item, index) => {
+                const difference = item['Your Expenses'] - item['Average Expenses'];
+                const percentDiff = ((difference / item['Average Expenses']) * 100).toFixed(1);
+                const isHigher = difference > 0;
+
+                return (
+                  <motion.div
+                    key={item.category}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ 
+                      delay: index * 0.1,
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 20
+                    }}
+                    whileHover={{ scale: 1.05 }}
+                    className="bg-white/30  rounded-xl shadow-md p-4"
+                  >
+                    <div className="flex justify-between items-center">
+                      <span className="font-semibold text-gray-100">
+                        {formatXAxisLabel(item.category)}
+                      </span>
+                      <div className="flex items-center space-x-2">
+                        {isHigher ? (
+                          <TrendingUpIcon className="w-5 h-5 text-green-500" />
+                        ) : (
+                          <TrendingDownIcon className="w-5 h-5 text-red-400" />
+                        )}
+                        <span 
+                          className={`font-bold ${
+                            isHigher ? 'text-green-500' : 'text-red-400'
+                          }`}
+                        >
+                          {isHigher ? '+' : '-'}{Math.abs(percentDiff)}%
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
