@@ -769,7 +769,16 @@ allroutes.get('/getData', async (req, res) => {
 });
 
 
-
+allroutes.post('/chatbot4', async (req, res) => {
+  try {
+    let { question } = req.body; 
+    question = question.toLowerCase();
+    const answer = await chat(question);
+    res.status(200).json({ answer }); 
+  } catch (error) {
+    res.status(400).json({ error: error.message }); 
+  }
+});
 
 
 allroutes.post('/getAnalysis', async(req, res) => {
