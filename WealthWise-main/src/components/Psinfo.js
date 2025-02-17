@@ -268,7 +268,36 @@ const Psinfo = ({ mail }) => {
 
       <StockMarketPattern />
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/50 to-purple-900/50"></div> 
-            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative flex justify-center items-center min-h-screen"
+              style={{ 
+                background: `linear-gradient(to bottom right, ${colors.light}, ${colors.background})` 
+              }}
+            >
+             <div
+                className="w-full max-w-md p-8 rounded-xl shadow-2xl text-center"
+                style={{
+                  backgroundColor: 'white',
+                  borderColor: "#90CC65",
+                  borderWidth: '2px'
+                }}
+              >
+                <h2
+                  className="text-2xl font-bold mb-4"
+                  style={{ color: colors.dark }}
+                >
+                  Thank You!
+                </h2>
+                <p
+                  className="mb-4"
+                  style={{ color: colors.text }}
+                >
+                 Your information has been submitted successfully. Redirecting in {timer} {timer === 1 ? 'second' : 'seconds'}.
+                </p>
+              </div>
+      </motion.div>
       </div>
 
       </>
