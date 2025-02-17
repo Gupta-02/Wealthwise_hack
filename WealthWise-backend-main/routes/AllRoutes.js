@@ -373,7 +373,69 @@ function recommendFds(age, amount, termYears) {
 // mf start
 
 let mutualFundsData = {};
+async function fetchAllMFCSVData() {
+  const fileMappings = {
+    mutualFunds: "mutual_funds_data - Main.csv",
+  };
 
+  for (const [key, fileName] of Object.entries(fileMappings)) {
+    try {
+      const csvDocument = await csvFile.findOne({ fileName });
+      if (csvDocument && csvDocument.data) {
+        mutualFundsData[key] = csvDocument.data;
+        console.log(`${fileName} data loaded successfully!`);
+      } else {
+        console.error(`CSV file ${fileName} not found or has no data.`);
+      }
+    } catch (error) {
+      console.error(`Error loading ${fileName}:`, error.message);
+    }
+  }
+}
+
+async function recommendMutualFunds(userInput) {
+  await fetchAllMFCSVData();
+
+  const { user_age, user_risk_appetite } = userInput;
+
+  let allFunds = Object.values(mutualFundsData).flat();
+  if (!allFunds || allFunds.length === 0) {
+    throw new Error("No mutual funds data available.");
+  }
+
+  let filteredData = allFunds.filter(
+    (fund) => fund["Risk"] === user_risk_appetite
+  );
+
+  if (filteredData.length === 0) {
+    throw new Error("No funds match the given risk appetite.");
+  }
+
+  filteredData = filteredData.sort((a, b) => {
+    return (
+      b["Sharpe"] - a["Sharpe"] ||
+      b["Alpha"] - a["Alpha"] ||
+      a["Beta"] - b["Beta"] ||
+      a["Expense ratio"] - b["Expense ratio"] ||
+      a["Standard Deviation"] - b["Standard Deviation"]
+    );
+  });
+
+  let recommendedFunds;
+  if (18 <= user_age && user_age < 30) {
+    const highRiskFunds = filteredData.filter((fund) => fund["Risk"] === 'High').slice(0, 2);
+    const otherFunds = filteredData.filter((fund) => !highRiskFunds.includes(fund)).slice(0, 1);
+    recommendedFunds = [...highRiskFunds, ...otherFunds];
+  } else if (30 <= user_age && user_age <= 50) {
+    const highRiskFunds = filteredData.filter((fund) => fund["Risk"] === 'High').slice(0, 1);
+    const otherFunds = filteredData.filter((fund) => !highRiskFunds.includes(fund)).slice(0, 2);
+    recommendedFunds = [...highRiskFunds, ...otherFunds];
+  } else {
+    recommendedFunds = filteredData.filter((fund) => fund["Risk"] !== 'High').slice(0, 3);
+  }
+
+  return recommendedFunds;
+}
 
 async function getRecommendationFromGroq(userInput, recommendations) {
   const { user_age, user_risk_appetite, user_income, user_savings, user_investment_amount } = userInput;
