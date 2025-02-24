@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .env
+/WealthWise-backend-main/.env
 # testing
 /coverage
 # production
